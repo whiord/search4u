@@ -1,4 +1,4 @@
-package ru.search4u;
+package devcup.search4u.backend;
 
 public interface IndexCallback {
 	void writeLog(String error);
@@ -6,5 +6,7 @@ public interface IndexCallback {
 	void setTotalDocumentsNumber(int number);
 
 	void setProcessedDocumentsNumber(int number);
+    
+    void processingDone();
 	
 }

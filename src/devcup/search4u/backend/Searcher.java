@@ -1,4 +1,4 @@
-package ru.search4u;
+package devcup.search4u.backend;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -43,11 +43,11 @@ public class Searcher {
     }
 
     private static boolean isBigRussianLetter(char letter) {
-        return letter >= 'А' && letter <= 'Я' || letter == 'Ё';
+        return letter >= 'пїЅ' && letter <= 'пїЅ' || letter == 'пїЅ';
     }
 
     private static boolean isSentenceDelim(char c){
-        return c=='.' || c=='!' || c=='?' || c=='…';
+        return c=='.' || c=='!' || c=='?' || c=='пїЅ';
     }
 
     private static boolean isStartSentence(String s, int pos)
@@ -143,7 +143,7 @@ public class Searcher {
 		
 		String indexDirName = "D:\\test_index";
 		String resultFileName = "D:\\search_results.txt";
-		String queryStr = "Рогов и Копыт";
+		String queryStr = "пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ";
 		Integer maxHitsNumber = Integer.valueOf(50);
 		
 		Searcher docSearcher = new Searcher(indexDirName);
