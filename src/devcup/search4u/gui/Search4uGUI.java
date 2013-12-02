@@ -10,6 +10,9 @@
  */
 package devcup.search4u.gui;
 
+import java.io.File;
+import javax.swing.JFileChooser;
+
 public class Search4uGUI extends javax.swing.JFrame {
 
     /** Creates new form NewApplication */
@@ -61,6 +64,11 @@ public class Search4uGUI extends javax.swing.JFrame {
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Предобработка..."));
 
         jButton1.setText("Выбрать...");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
 
         jButton2.setText("Обработать");
 
@@ -247,6 +255,21 @@ public class Search4uGUI extends javax.swing.JFrame {
 private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);
 }//GEN-LAST:event_exitMenuItemActionPerformed
+
+private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+    JFileChooser chooser = new JFileChooser();
+    File bufDir = new File(jTextField1.getText());
+    if (bufDir.exists())
+            chooser.setCurrentDirectory(bufDir.getParentFile());
+    else
+            chooser.setCurrentDirectory(null);
+    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    int retval = chooser.showOpenDialog(this);
+    if (retval == JFileChooser.APPROVE_OPTION){
+            File f = chooser.getSelectedFile();
+            jTextField1.setText(f.getAbsolutePath());
+    }
+}//GEN-LAST:event_jButton1MouseClicked
 
     /**
      * @param args the command line arguments

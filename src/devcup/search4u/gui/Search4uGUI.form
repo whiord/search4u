@@ -150,6 +150,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="&#x412;&#x44b;&#x431;&#x440;&#x430;&#x442;&#x44c;..."/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButton1MouseClicked"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="jButton2">
           <Properties>
