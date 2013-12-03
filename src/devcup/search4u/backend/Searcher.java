@@ -1,4 +1,4 @@
-package ru.search4u;
+package devcup.search4u.backend;
 
 import java.io.File;
 import java.io.IOException;
