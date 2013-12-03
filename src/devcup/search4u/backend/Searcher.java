@@ -1,11 +1,7 @@
-package devcup.search4u.backend;
+package ru.search4u;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.Document;
@@ -26,11 +22,8 @@ import org.apache.lucene.search.highlight.TokenSources;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
-import com.ontos.core.miner.util.ObjectPair;
-
 public class Searcher {
 
-//	    public static final int MAX_STEP = 450;
     private RussianAnalyzer analyzer;
     private IndexSearcher searcher;
     private IndexReader reader;
@@ -41,68 +34,23 @@ public class Searcher {
         searcher = new IndexSearcher(reader);
         analyzer = new RussianAnalyzer();
     }
-
-    private static boolean isBigRussianLetter(char letter) {
-        return letter >= 'пїЅ' && letter <= 'пїЅ' || letter == 'пїЅ';
-    }
-
-    private static boolean isSentenceDelim(char c){
-        return c=='.' || c=='!' || c=='?' || c=='пїЅ';
-    }
-
-    private static boolean isStartSentence(String s, int pos)
-    {
-        return isBigRussianLetter(s.charAt(pos)) &&
-                ( pos == 0 || pos > 0 && s.charAt(pos-1) == '\n' ||
-                  pos > 1 && s.charAt(pos-1) == ' ' && isSentenceDelim(s.charAt(pos - 2)) );
-    }
-
-    private String GetSentence(String input_hit, int offset)
-    {
-        int start_sentence_pos, end_sentence_pos;
-        start_sentence_pos = end_sentence_pos = offset;
-
-        //get start position of sencence
-        while (start_sentence_pos > 0 && !isStartSentence(input_hit, start_sentence_pos))
-            start_sentence_pos--;
-
-        //get end position of sencence
-        while (end_sentence_pos < input_hit.length() && !isSentenceDelim(input_hit.charAt(end_sentence_pos)) )
-            end_sentence_pos++;
-
-        if (end_sentence_pos != input_hit.length())
-            end_sentence_pos++;
-
-        char[] chars = input_hit.substring(start_sentence_pos, end_sentence_pos).toCharArray();
-        return new String(chars);
-    }
-
-
-    private static boolean IsGoodSentence(String sentence) {
-        return isBigRussianLetter(sentence.charAt(0)) && isSentenceDelim(sentence.charAt(sentence.length()-1));
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        searcher.close();
-    }
     
-    public Collection<ObjectPair<String, String>> search(final String query_str, Integer max_hits_number) throws ParseException, IOException, InvalidTokenOffsetsException
+    public SearchResult search(final String queryStr) throws ParseException, IOException, InvalidTokenOffsetsException
     {
-        if (max_hits_number == -1)
-            max_hits_number = 1000000;
+        SearchResult result = new SearchResult();
+    	
+    	int max_hits_number = 1000000;
 
-        System.out.println("Query: "+query_str+"; max_hits_number: "+max_hits_number);
-        Query query = new QueryParser(Version.LUCENE_36, "text", analyzer).parse(query_str);
+        System.out.println("Query: "+queryStr+"; max_hits_number: "+max_hits_number);
+        Query query = new QueryParser(Version.LUCENE_36, "text", analyzer).parse(queryStr);
         TopDocs topDocs = searcher.search(query, max_hits_number); //TODO: try SpanTermQuery - maybe it will be faster than searcher.doc() and reader.getTermFreqVector()
         System.out.println("Documents found: " + topDocs.scoreDocs.length);
 
         if (topDocs.scoreDocs.length == 0) {
-        	System.out.println("No documents found for query: " + query_str);
+        	System.out.println("No documents found for query: " + queryStr);
             return null;
         }
 
-        Collection<ObjectPair<String, String>> result = new ArrayList<ObjectPair<String, String>>();
         int procecced_hits = 0;
         
         SimpleHTMLFormatter htmlFormatter = new SimpleHTMLFormatter();
@@ -120,12 +68,11 @@ public class Searcher {
                 if ((frag[j] != null) && (frag[j].getScore() > 0)) {
                     System.out.println((frag[j].toString()));
                 }
-            }
-            
+            }            
         }
 
         if (procecced_hits == 0){
-        	System.out.println("No good sentence found for query: " + query_str);
+        	System.out.println("No good sentence found for query: " + queryStr);
             return null;
         }
 
@@ -133,36 +80,17 @@ public class Searcher {
     }
 	
 	
-	public static void main(String[] args) throws IOException, ParseException, InvalidTokenOffsetsException {
-		/*
-		String indexDirName = args[0];
-		String resultFileName = args[1];
-		String queryStr = args[2];
-		Integer maxHitsNumber = Integer.valueOf(args[3]);
-		*/
-		
+	public static void main(String[] args) throws IOException, ParseException, InvalidTokenOffsetsException {		
 		String indexDirName = "D:\\test_index";
-		String resultFileName = "D:\\search_results.txt";
-		String queryStr = "пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ";
-		Integer maxHitsNumber = Integer.valueOf(50);
-		
 		Searcher docSearcher = new Searcher(indexDirName);
-		ArrayList<ObjectPair<String, String>> resultSentences = 
-				(ArrayList<ObjectPair<String, String>>) docSearcher.search(queryStr, maxHitsNumber);
 		
-		try {
-			PrintWriter out = new PrintWriter(new FileWriter(resultFileName));
-			out.println(queryStr);
-	        for (ObjectPair<String, String> entry : resultSentences) { 
-	        	out.println(entry.getFirst());
-	        }
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		String queryStr1 = "Рогов и Копыт";
+		SearchResult result1 =  docSearcher.search(queryStr1);
 		
+		String queryStr2 = "Группа компаний ПИК";
+		SearchResult result2 =  docSearcher.search(queryStr2);
+				
 		System.out.println("Finish search");
-
 	}
 
 }
