@@ -2,6 +2,7 @@ package devcup.search4u.backend;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.Document;
@@ -28,14 +29,14 @@ public class Searcher {
     private IndexSearcher searcher;
     private IndexReader reader;
 
-    public Searcher(String indexDirName) throws IOException {
+    public Searcher(String indexDirName, SearchCallback handler) throws IOException {
         FSDirectory dir = FSDirectory.open(new File(indexDirName));
         reader = IndexReader.open(dir);
         searcher = new IndexSearcher(reader);
         analyzer = new RussianAnalyzer();
     }
     
-    public SearchResult search(final String queryStr) throws ParseException, IOException, InvalidTokenOffsetsException
+    public List<SearchResult> search(final List<String> queryStr) throws ParseException, IOException, InvalidTokenOffsetsException
     {
         SearchResult result = new SearchResult();
     	
@@ -82,7 +83,7 @@ public class Searcher {
 	
 	public static void main(String[] args) throws IOException, ParseException, InvalidTokenOffsetsException {		
 		String indexDirName = "D:\\test_index";
-		Searcher docSearcher = new Searcher(indexDirName);
+		Searcher docSearcher = new Searcher(indexDirName, null);
 		
 		String queryStr1 = "����� � �����";
 		SearchResult result1 =  docSearcher.search(queryStr1);
