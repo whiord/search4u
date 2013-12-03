@@ -157,7 +157,7 @@ public class Searcher {
     
     public static void main(String[] args) throws IOException, ParseException, InvalidTokenOffsetsException {        
         String indexDirName = "D:\\test_index";
-        Searcher docSearcher = new Searcher(indexDirName);
+        Searcher docSearcher = new Searcher(indexDirName, null);
         
         List<String> qStrs = new ArrayList<String>();
         qStrs.add("Рогов и копыт");
