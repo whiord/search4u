@@ -1,5 +1,6 @@
 package devcup.search4u.backend;
 
+import devcup.search4u.common.LogLevel;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,7 +43,7 @@ public class Indexer {
 
             } catch (IOException ex) {
             	processed_with_errors++;
-            	if (callback != null) callback.writeLog("Error in document " + doc + " : " + ex.getMessage());
+            	if (callback != null) callback.writeLog(LogLevel.ERROR, "Error in document " + doc + " : " + ex.getMessage());
                 ex.printStackTrace();
             } finally {
                 procecced_files_number++;
@@ -55,7 +56,7 @@ public class Indexer {
                 document.add(new Field("text", text.toString(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
                 writer.addDocument(document);
             } else {
-            	if (callback != null) callback.writeLog("Empty document : " + doc);
+            	if (callback != null) callback.writeLog(LogLevel.INFO, "Empty document : " + doc);
             }
         }
         System.out.println("All documents is procecced");
@@ -92,13 +93,13 @@ public class Indexer {
 
         File file_in_path = new File(docs_path);
         if (!file_in_path.exists()) {
-        	if (callback != null) callback.writeLog("Not found: " + docs_path);
+        	if (callback != null) callback.writeLog(LogLevel.ERROR, "Not found: " + docs_path);
             System.out.println("\nNot found: " + docs_path);
             return null;
         }
 
         if (!file_in_path.isDirectory()) {
-        	if (callback != null) callback.writeLog("Not directory: " + docs_path);
+        	if (callback != null) callback.writeLog(LogLevel.ERROR, "Not directory: " + docs_path);
             System.out.println("\nNot directory: " + docs_path);
             return null;
         }

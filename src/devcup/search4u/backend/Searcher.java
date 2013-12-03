@@ -84,10 +84,10 @@ public class Searcher {
 		String indexDirName = "D:\\test_index";
 		Searcher docSearcher = new Searcher(indexDirName);
 		
-		String queryStr1 = "Рогов и Копыт";
+		String queryStr1 = "пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ";
 		SearchResult result1 =  docSearcher.search(queryStr1);
 		
-		String queryStr2 = "Группа компаний ПИК";
+		String queryStr2 = "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ";
 		SearchResult result2 =  docSearcher.search(queryStr2);
 				
 		System.out.println("Finish search");
