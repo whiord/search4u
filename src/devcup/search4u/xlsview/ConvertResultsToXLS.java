@@ -12,10 +12,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -31,9 +33,34 @@ public class ConvertResultsToXLS {
     private final List <SearchResult> searchResultsList;
     private final String resultXMLPath;
     
-    public ConvertResultsToXLS (List <SearchResult> searchResultsList, String resultXMLPath) {
+    ConvertResultsToXLS (List <SearchResult> searchResultsList, String resultXMLPath) {
         this.searchResultsList = searchResultsList;
         this.resultXMLPath = resultXMLPath;
+    }
+    
+    private HSSFRichTextString labeledStringToRichTextString (String labeledString, HSSFFont partFont) {
+    	//create List, delete labels
+    	List<ObjectPair<Integer, Integer>> boarderPairs = new ArrayList<ObjectPair<Integer, Integer>>();
+
+    	Integer firstPosition = labeledString.indexOf("<B>"); 
+    	Integer secondPosition;
+    	while( firstPosition != -1) {
+    		labeledString = labeledString.replaceFirst("<B>", "");
+    		secondPosition = labeledString.indexOf("</B>");
+    		labeledString = labeledString.replaceFirst("</B>", "");
+      		boarderPairs.add(new ObjectPair<Integer, Integer>(firstPosition, secondPosition));
+    		
+    		firstPosition = labeledString.indexOf("<B>");
+    	}
+    	
+    	//create richTextString, apply font
+    	HSSFRichTextString richTextString = new HSSFRichTextString(labeledString);
+    	
+    	for(ObjectPair<Integer, Integer> boarderpair: boarderPairs) {
+    		richTextString.applyFont(boarderpair.getFirst(), boarderpair.getSecond(), partFont);
+    	}
+    	  	
+    	return richTextString;
     }
     
     public void createXLSTable() throws IOException {		
@@ -44,11 +71,12 @@ public class ConvertResultsToXLS {
         Row headerRow = sheet.createRow(0);
        
         HSSFCellStyle style = workbook.createCellStyle();
-        //HSSFFont font = workbook.createFont();
-        //font.setBoldweight((short) 10);
-	    //font.setColor(HSSFColor.GREEN.index);
-	    //style.setFont(font);
-        
+
+        HSSFFont partFont = workbook.createFont();
+        //partFont.setItalic(true);
+        partFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        partFont.setUnderline(HSSFFont.U_DOUBLE);
+
 
 	    HSSFFont defaultFont= workbook.createFont();
 	    defaultFont.setFontHeightInPoints((short)10);
@@ -89,23 +117,25 @@ public class ConvertResultsToXLS {
         //sheet.autoSizeColumn(1);
         sheet.setColumnWidth(1, 12000);
         
-        headerCell = headerRow.createCell(2);
+        /*headerCell = headerRow.createCell(2);
         headerCell.setCellValue("Позиция в документе");
         headerCell.setCellStyle(style);
         sheet.autoSizeColumn(2);
         //sheet.setColumnWidth(2, 7000);
+        */
         
-        headerCell = headerRow.createCell(3);
+        headerCell = headerRow.createCell(2);
         headerCell.setCellValue("Краткое описание");
         headerCell.setCellStyle(style);
         //sheet.autoSizeColumn(3);
-        sheet.setColumnWidth(3, 18000);
+        sheet.setColumnWidth(2, 18000);
      
         
         //create another Rows
         int rowNum = 1;
         for(SearchResult searchResult : searchResultsList){   
-            for (String key : searchResult.getDocumentsFragments().keySet()) {
+            for (String key : searchResult.getRelevDocsPath()) {
+            //for (String key : searchResult.getDocumentsFragments().keySet()) {
                 for (ObjectPair<Integer, String> pair: searchResult.getDocumentsFragments().get(key)) {
                     
                     Row row = sheet.createRow(rowNum++);
@@ -119,12 +149,12 @@ public class ConvertResultsToXLS {
                     cell.setCellValue(key);
                     //cell.setCellStyle(style);
                     
-                    cell = row.createCell(2);
-                    cell.setCellValue(pair.getFirst());
+                    //cell = row.createCell(2);
+                    //cell.setCellValue(pair.getFirst());
                     //cell.setCellStyle(style);
                     
-                    cell = row.createCell(3);
-                    cell.setCellValue(pair.getSecond());
+                    cell = row.createCell(2);
+                    cell.setCellValue(labeledStringToRichTextString(pair.getSecond(), partFont));
                     //cell.setCellStyle(style);
                     
                 }
@@ -143,5 +173,5 @@ public class ConvertResultsToXLS {
         catch (IOException e) {
             e.printStackTrace();
         }
-    }       
+    } 
 }
