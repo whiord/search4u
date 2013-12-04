@@ -70,6 +70,7 @@ public class ConvertResultsToXLS {
         //create headerRow
         Row headerRow = sheet.createRow(0);
        
+        HSSFCellStyle headerStyle = workbook.createCellStyle();
         HSSFCellStyle style = workbook.createCellStyle();
 
         HSSFFont partFont = workbook.createFont();
@@ -93,13 +94,13 @@ public class ConvertResultsToXLS {
 
 	    //style=(HSSFCellStyle) headerRow.getRowStyle();	    
 	    //style.setFillPattern(CellStyle.SOLID_FOREGROUND);	    
-	    style.setWrapText(true);
-	    style.setAlignment(CellStyle.ALIGN_CENTER);
+	    headerStyle.setWrapText(true);
+	    headerStyle.setAlignment(CellStyle.ALIGN_CENTER);
 	    //style.setFillBackgroundColor(HSSFColor.ROYAL_BLUE.index);
 	    //style.setFillForegroundColor(HSSFColor.ROYAL_BLUE.index);
 	    //style.setHidden(false);
 	    //style.setIndention(indent);
-	    style.setFont(font);
+	    headerStyle.setFont(font);
 	    
 	    
         
@@ -107,13 +108,13 @@ public class ConvertResultsToXLS {
         Cell headerCell;
         headerCell = headerRow.createCell(0);
         headerCell.setCellValue("Запрос");
-        headerCell.setCellStyle(style);
+        headerCell.setCellStyle(headerStyle);
         //sheet.autoSizeColumn(0);
         sheet.setColumnWidth(0, 7000);
         
         headerCell = headerRow.createCell(1);
         headerCell.setCellValue("Путь к документу");
-        headerCell.setCellStyle(style);
+        headerCell.setCellStyle(headerStyle);
         //sheet.autoSizeColumn(1);
         sheet.setColumnWidth(1, 12000);
         
@@ -126,11 +127,14 @@ public class ConvertResultsToXLS {
         
         headerCell = headerRow.createCell(2);
         headerCell.setCellValue("Краткое описание");
-        headerCell.setCellStyle(style);
+        headerCell.setCellStyle(headerStyle);
         //sheet.autoSizeColumn(3);
         sheet.setColumnWidth(2, 18000);
      
         
+        style.setWrapText(true);
+        style.setFont(defaultFont);
+	    
         //create another Rows
         int rowNum = 1;
         for(SearchResult searchResult : searchResultsList){   
@@ -143,11 +147,11 @@ public class ConvertResultsToXLS {
                     Cell cell;
                     cell = row.createCell(0);
                     cell.setCellValue(searchResult.getQuery());
-                    //cell.setCellStyle(style);
+                    cell.setCellStyle(style);
                     
                     cell = row.createCell(1);
                     cell.setCellValue(key);
-                    //cell.setCellStyle(style);
+                    cell.setCellStyle(style);
                     
                     //cell = row.createCell(2);
                     //cell.setCellValue(pair.getFirst());
@@ -155,7 +159,7 @@ public class ConvertResultsToXLS {
                     
                     cell = row.createCell(2);
                     cell.setCellValue(labeledStringToRichTextString(pair.getSecond(), partFont));
-                    //cell.setCellStyle(style);
+                    cell.setCellStyle(style);
                     
                 }
             }
@@ -173,5 +177,5 @@ public class ConvertResultsToXLS {
         catch (IOException e) {
             e.printStackTrace();
         }
-    } 
+    }
 }
