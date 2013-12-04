@@ -2,7 +2,6 @@ package devcup.search4u.backend;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.ontos.core.miner.util.ObjectPair;
@@ -10,6 +9,11 @@ import java.util.List;
 
 
 public class SearchResult {
+    public SearchResult() {
+        fragments = new HashMap<String, List<ObjectPair<Integer, String>>>();
+        relevDocsPath = new ArrayList<String>();
+    }
+    
 	private String query;
 	private Map<String, List<ObjectPair<Integer, String>>> fragments; // key - document path, value - pair(offset, fragment text)
 	private List<ObjectPair<String, String>> documents; // key - document path, value - document highlighting text

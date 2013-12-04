@@ -19,7 +19,9 @@ import devcup.search4u.backend.Searcher;
 import devcup.search4u.common.LogLevel;
 import devcup.search4u.xlsview.ConvertResultsToXLS;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -27,20 +29,16 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.SwingWorker;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
 
 public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, SearchCallback{
     
@@ -58,21 +56,6 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        previewFrame = new javax.swing.JFrame();
-        closePreviewButton = new javax.swing.JButton();
-        exportXLSButton = new javax.swing.JButton();
-        openDestinationButton = new javax.swing.JButton();
-        jSplitPane1 = new javax.swing.JSplitPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        resultList = new javax.swing.JList();
-        jPanel4 = new javax.swing.JPanel();
-        documentPreviewPathField = new javax.swing.JTextField();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        previewPane = new javax.swing.JTextPane();
-        journalFrame = new javax.swing.JFrame();
-        closeJournalButton = new javax.swing.JButton();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        journalPane = new javax.swing.JTextPane();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         docDirectoryField = new javax.swing.JTextField();
@@ -85,157 +68,20 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
         queriesPane = new javax.swing.JTextPane();
         loadQueriesButton = new javax.swing.JButton();
         saveQueriesButton = new javax.swing.JButton();
-        wildcardsCheckBox = new javax.swing.JCheckBox();
+        openJournalButton = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         searchButton = new javax.swing.JButton();
-        showResultsButton = new javax.swing.JButton();
-        openJournalButton = new javax.swing.JButton();
         searchProgressBar = new javax.swing.JProgressBar();
         searchSummaryLabel = new javax.swing.JLabel();
+        wildcardsCheckBox = new javax.swing.JCheckBox();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
-        helpMenu = new javax.swing.JMenu();
-        aboutMenuItem = new javax.swing.JMenuItem();
-
-        previewFrame.setTitle("Предпросмотр");
-        previewFrame.setName("previewFrame"); // NOI18N
-        previewFrame.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-                previewFrameComponentShown(evt);
-            }
-            public void componentHidden(java.awt.event.ComponentEvent evt) {
-                previewFrameComponentHidden(evt);
-            }
-        });
-
-        closePreviewButton.setLabel("Закрыть");
-        closePreviewButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                closePreviewButtonMouseClicked(evt);
-            }
-        });
-
-        exportXLSButton.setText("Экспорт в XLS");
-        exportXLSButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                exportXLSButtonMouseClicked(evt);
-            }
-        });
-
-        openDestinationButton.setLabel("Открыть расположение");
-        openDestinationButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                openDestinationButtonMouseClicked(evt);
-            }
-        });
-
-        jSplitPane1.setDividerLocation(250);
-        jSplitPane1.setDividerSize(8);
-
-        resultList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        resultList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                resultListValueChanged(evt);
-            }
-        });
-        jScrollPane2.setViewportView(resultList);
-
-        jSplitPane1.setLeftComponent(jScrollPane2);
-
-        documentPreviewPathField.setEditable(false);
-
-        jScrollPane3.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane3.setToolTipText("");
-        jScrollPane3.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
-        previewPane.setEditable(false);
-        previewPane.setContentType("text/html"); // NOI18N
-        jScrollPane3.setViewportView(previewPane);
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(documentPreviewPathField, javax.swing.GroupLayout.DEFAULT_SIZE, 696, Short.MAX_VALUE)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING)
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(documentPreviewPathField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE))
-        );
-
-        jSplitPane1.setRightComponent(jPanel4);
-
-        javax.swing.GroupLayout previewFrameLayout = new javax.swing.GroupLayout(previewFrame.getContentPane());
-        previewFrame.getContentPane().setLayout(previewFrameLayout);
-        previewFrameLayout.setHorizontalGroup(
-            previewFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(previewFrameLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(previewFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 954, Short.MAX_VALUE)
-                    .addGroup(previewFrameLayout.createSequentialGroup()
-                        .addComponent(closePreviewButton, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(exportXLSButton, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(openDestinationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        previewFrameLayout.setVerticalGroup(
-            previewFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, previewFrameLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(previewFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(closePreviewButton)
-                    .addComponent(exportXLSButton)
-                    .addComponent(openDestinationButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSplitPane1)
-                .addContainerGap())
-        );
-
-        closeJournalButton.setLabel("Закрыть");
-        closeJournalButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                closeJournalButtonMouseClicked(evt);
-            }
-        });
-
-        jScrollPane4.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
-        journalPane.setContentType("text/html"); // NOI18N
-        journalPane.setText("<html>\n<head>\n\n<style type=\"text/css\">\n.info{\ncolor:#0036B5;\n}\n.debug{\ncolor:#00701E;\n}\n.error{\ncolor:#AD022A;\n}\n</head>\n</style>\n<body id=\"body\"></body>\n<html>\n");
-        journalPane.setMaximumSize(new java.awt.Dimension(800, 2147483647));
-        jScrollPane4.setViewportView(journalPane);
-
-        javax.swing.GroupLayout journalFrameLayout = new javax.swing.GroupLayout(journalFrame.getContentPane());
-        journalFrame.getContentPane().setLayout(journalFrameLayout);
-        journalFrameLayout.setHorizontalGroup(
-            journalFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(journalFrameLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(journalFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 651, Short.MAX_VALUE)
-                    .addComponent(closeJournalButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 651, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        journalFrameLayout.setVerticalGroup(
-            journalFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, journalFrameLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(closeJournalButton)
-                .addContainerGap())
-        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("search4u");
+        setLocationByPlatform(true);
+        setModalExclusionType(java.awt.Dialog.ModalExclusionType.TOOLKIT_EXCLUDE);
         setName("search4u"); // NOI18N
         setResizable(false);
 
@@ -270,13 +116,12 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(indexButton, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(indexProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE))
-                    .addComponent(docDirectoryField))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(docDirectoryField)
+                    .addComponent(indexProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(23, 23, 23)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                    .addComponent(indexButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -286,10 +131,10 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(docDirectoryField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(indexButton)
-                    .addComponent(indexProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(indexProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(indexButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -322,7 +167,12 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
             }
         });
 
-        wildcardsCheckBox.setText("WIldcards");
+        openJournalButton.setText("Журнал");
+        openJournalButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                openJournalButtonMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -330,13 +180,14 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(loadQueriesButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(saveQueriesButton, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
-                    .addComponent(clearQueriesButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(wildcardsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 527, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(loadQueriesButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(saveQueriesButton, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                        .addComponent(clearQueriesButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(openJournalButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -344,16 +195,15 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(clearQueriesButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(loadQueriesButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(saveQueriesButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(wildcardsCheckBox)
-                        .addGap(0, 133, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 133, Short.MAX_VALUE)
+                        .addComponent(openJournalButton))
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
         );
 
@@ -367,25 +217,12 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
             }
         });
 
-        showResultsButton.setText("Результаты");
-        showResultsButton.setEnabled(false);
-        showResultsButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                showResultsButtonMouseClicked(evt);
-            }
-        });
-
-        openJournalButton.setText("Журнал");
-        openJournalButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                openJournalButtonMouseClicked(evt);
-            }
-        });
-
         searchProgressBar.setStringPainted(true);
 
         searchSummaryLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        searchSummaryLabel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        searchSummaryLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
+        wildcardsCheckBox.setText("Расширенный поиск");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -393,15 +230,13 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(searchButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(showResultsButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(searchProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
-                    .addComponent(openJournalButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchSummaryLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(searchProgressBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 528, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(wildcardsCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(searchButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchSummaryLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -409,15 +244,12 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(searchSummaryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(searchButton)
-                            .addComponent(searchProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(showResultsButton)
-                            .addComponent(openJournalButton))))
+                    .addComponent(searchSummaryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(wildcardsCheckBox))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(searchProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchButton))
                 .addContainerGap())
         );
 
@@ -435,15 +267,6 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
 
         menuBar.add(fileMenu);
 
-        helpMenu.setMnemonic('h');
-        helpMenu.setText("Помощь");
-
-        aboutMenuItem.setMnemonic('a');
-        aboutMenuItem.setText("About");
-        helpMenu.add(aboutMenuItem);
-
-        menuBar.add(helpMenu);
-
         setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -451,13 +274,13 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGap(24, 24, 24))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -470,7 +293,7 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(24, 24, 24))
         );
 
         pack();
@@ -496,22 +319,6 @@ private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
     }
 }//GEN-LAST:event_jButton1MouseClicked
 
-private void showResultsButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showResultsButtonMouseClicked
-    if (!showResultsButton.isEnabled()){
-        return;
-    }
-    previewFrame.pack();
-    previewFrame.setVisible(true);
-}//GEN-LAST:event_showResultsButtonMouseClicked
-
-private void previewFrameComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_previewFrameComponentHidden
-    this.setEnabled(true);
-}//GEN-LAST:event_previewFrameComponentHidden
-
-private void previewFrameComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_previewFrameComponentShown
-    this.setEnabled(false);
-}//GEN-LAST:event_previewFrameComponentShown
-
 private void indexButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_indexButtonMouseClicked
     if (!indexButton.isEnabled()){
         return;
@@ -533,7 +340,7 @@ private void indexButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
             @Override
             protected Void doInBackground() throws Exception {
                 Indexer indexer = new Indexer(handler);
-                String index = docPath.getName()+"_index";
+                String index = "_search4u_indexies/" + docPath.getName()+"_index";
                         
                 indexer.buildIndex(docPath.getAbsolutePath(), index);
                 return null;
@@ -547,41 +354,16 @@ private void indexButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
     backend.execute();
 }//GEN-LAST:event_indexButtonMouseClicked
 
-    private void closePreviewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_closePreviewButtonMouseClicked
-        previewFrame.setVisible(false);
-    }//GEN-LAST:event_closePreviewButtonMouseClicked
-
     private void openJournalButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_openJournalButtonMouseClicked
-        journalFrame.pack();
-        journalFrame.setVisible(true);
+        JournalFrame.getInstance().pack();
+        JournalFrame.getInstance().setVisible(true);
     }//GEN-LAST:event_openJournalButtonMouseClicked
-
-    private void closeJournalButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_closeJournalButtonMouseClicked
-        journalFrame.setVisible(false);
-    }//GEN-LAST:event_closeJournalButtonMouseClicked
-
-    private void resultListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_resultListValueChanged
-        int sel = resultList.getSelectedIndex();
-        if (sel == -1){
-            return;
-        }
-        ObjectPair<String, String> selectedDoc = new ObjectPair<>(searchResultList.get(sel));
-        
-        documentPreviewPathField.setText(selectedDoc.getFirst());
-        HTMLDocument doc = (HTMLDocument) previewPane.getDocument();
-        String style = "<style type=\"text/css\"> B{ background-color: #EAFF5E } </style>";
-        //HTMLEditorKit editor = new HTMLEditorKit();
-        //editor.
-        String text= selectedDoc.getSecond();
-        text = text.replaceAll("\\n", "<br>");
-        String html = String.format("<html> <head> %s </head> <body> %s </body> </html>", style, text);
-        previewPane.setText(html);
-    }//GEN-LAST:event_resultListValueChanged
 
     private void searchButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchButtonMouseClicked
         if (!searchButton.isEnabled()){
             return;
         }
+      
         searchProgressBar.setValue(0);
         searchProgressBar.setMinimum(0);
         final SearchCallback handler = this;
@@ -601,7 +383,6 @@ private void indexButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         
         
         searchButton.setEnabled(false);
-        showResultsButton.setEnabled(false);
         jPanel3.setEnabled(false);
         searchSummaryLabel.setText(null);
 
@@ -609,7 +390,7 @@ private void indexButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         SwingWorker backend = new SwingWorker<List<SearchResult>, Void>() {
                 @Override
                 protected List<SearchResult> doInBackground() throws Exception {
-                    String index = docPath.getName()+"_index";
+                    String index = "_search4u_indexies/" + docPath.getName()+"_index";
                     Searcher searcher = new Searcher(index, handler);
                    
                     return searcher.search(queries, useWildcards);
@@ -701,51 +482,18 @@ private void indexButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         logWork(LogLevel.INFO, "Queries pane cleared");
     }//GEN-LAST:event_clearQueriesButtonMouseClicked
 
-    private void exportXLSButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_exportXLSButtonMouseClicked
-        JFileChooser chooser = new JFileChooser();
-        File bufDir = new File(docDirectoryField.getText());
-        if (bufDir.exists())
-            chooser.setCurrentDirectory(bufDir.getParentFile());
-        else
-            chooser.setCurrentDirectory(null);
-        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("XLS files", "xls");
-        chooser.setFileFilter(filter);
-        chooser.setAcceptAllFileFilterUsed(false);
-
-        int retval = chooser.showSaveDialog(this);
-        if (retval == JFileChooser.APPROVE_OPTION){
-            File f = chooser.getSelectedFile();
-            if (!f.getAbsolutePath().endsWith(".xls")){
-                f = new File(f.getAbsolutePath() + ".xls");
-            }
-            ConvertResultsToXLS xlsConverter = new ConvertResultsToXLS(searchResultList_origin, f.getAbsolutePath());
-            try {
-                xlsConverter.createXLSTable();
-                Desktop.getDesktop().open(f);
-            } catch (IOException ex) {
-                logWork(LogLevel.ERROR, "Can't save to *.xls: " + f.getAbsolutePath());
-            }
-        }
-    }//GEN-LAST:event_exportXLSButtonMouseClicked
-
-    private void openDestinationButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_openDestinationButtonMouseClicked
-        try {
-            Desktop.getDesktop().open((new File(documentPreviewPathField.getText())).getParentFile());
-        } catch (IOException ex) {
-            logWork(LogLevel.ERROR, "Can't open directory");
-        }
-       
-    }//GEN-LAST:event_openDestinationButtonMouseClicked
-
     private void processSearchResults(List<SearchResult> res) {
         searchButton.setEnabled(true);
-        
         jPanel3.setEnabled(true);
         
-       
         initSearchSummaryLabel(res);
-        initPreviewFrame(res);
+        PreviewFrame.disposeIfExists();
+        if (res.size() > 0){
+             PreviewFrame preview = PreviewFrame.getInstance(res);
+             preview.setVisible(true);
+        }
+        
+        
     }
     
     private void initSearchSummaryLabel(List<SearchResult> res){
@@ -767,23 +515,7 @@ private void indexButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         logWork(LogLevel.INFO, String.format("Found: %d fragments in %d documents", total_fragments, total_documents));
     }
     
-    private void initPreviewFrame(List<SearchResult> res){
-        if (res.size() > 0){
-            showResultsButton.setEnabled(true);
-            searchResultList = res.get(0).getDocuments();
-            searchResultList_origin = res;
-            String[] names = new String[searchResultList.size()];
-            for (int i = 0; i < searchResultList.size(); i++){
-                names[i] = new File(searchResultList.get(i).getFirst()).getName();
-            }
-            resultList.setListData(names);
-            resultList.setSelectedIndex(0);
-            showResultsButtonMouseClicked(null);
-        }
-        else{
-            showResultsButton.setEnabled(false);
-        }
-    }
+    
     
     /**
      * @param args the command line arguments
@@ -833,64 +565,42 @@ private void indexButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
                         }
                     }
                 });
-                app.setLocationByPlatform(true);
+                Dimension scr_d = Toolkit.getDefaultToolkit().getScreenSize();
+                Dimension app_d = app.getSize();
+                int disposal_x = (scr_d.width - app_d.width)/2,
+                    disposal_y = (scr_d.height - app_d.height)/2;
+                app.setLocation(disposal_x, disposal_y);
                 app.setVisible(true);
             }
         });
     }
-    private List<ObjectPair<String, String>> searchResultList;
-    private List<SearchResult> searchResultList_origin;
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem aboutMenuItem;
-    private javax.swing.JButton clearQueriesButton;
-    private javax.swing.JButton closeJournalButton;
-    private javax.swing.JButton closePreviewButton;
-    private javax.swing.JTextField docDirectoryField;
-    private javax.swing.JTextField documentPreviewPathField;
-    private javax.swing.JMenuItem exitMenuItem;
-    private javax.swing.JButton exportXLSButton;
-    private javax.swing.JMenu fileMenu;
-    private javax.swing.JMenu helpMenu;
-    private javax.swing.JButton indexButton;
-    private javax.swing.JProgressBar indexProgressBar;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JFrame journalFrame;
-    private javax.swing.JTextPane journalPane;
-    private javax.swing.JButton loadQueriesButton;
-    private javax.swing.JMenuBar menuBar;
-    private javax.swing.JButton openDestinationButton;
-    private javax.swing.JButton openJournalButton;
-    private javax.swing.JFrame previewFrame;
-    private javax.swing.JTextPane previewPane;
-    private javax.swing.JTextPane queriesPane;
-    private javax.swing.JList resultList;
-    private javax.swing.JButton saveQueriesButton;
-    private javax.swing.JButton searchButton;
-    private javax.swing.JProgressBar searchProgressBar;
-    private javax.swing.JLabel searchSummaryLabel;
-    private javax.swing.JButton showResultsButton;
-    private javax.swing.JCheckBox wildcardsCheckBox;
+    javax.swing.JButton clearQueriesButton;
+    javax.swing.JTextField docDirectoryField;
+    javax.swing.JMenuItem exitMenuItem;
+    javax.swing.JMenu fileMenu;
+    javax.swing.JButton indexButton;
+    javax.swing.JProgressBar indexProgressBar;
+    javax.swing.JButton jButton1;
+    javax.swing.JLabel jLabel1;
+    javax.swing.JPanel jPanel1;
+    javax.swing.JPanel jPanel2;
+    javax.swing.JPanel jPanel3;
+    javax.swing.JScrollPane jScrollPane1;
+    javax.swing.JButton loadQueriesButton;
+    javax.swing.JMenuBar menuBar;
+    javax.swing.JButton openJournalButton;
+    javax.swing.JTextPane queriesPane;
+    javax.swing.JButton saveQueriesButton;
+    javax.swing.JButton searchButton;
+    javax.swing.JProgressBar searchProgressBar;
+    javax.swing.JLabel searchSummaryLabel;
+    javax.swing.JCheckBox wildcardsCheckBox;
     // End of variables declaration//GEN-END:variables
 
     protected void logWork(LogLevel level, String message){
-        HTMLDocument doc = (HTMLDocument) journalPane.getDocument();
-        try { 
-            doc.insertBeforeEnd(doc.getElement("body"), level.decorateHTML(message));
-        } catch (BadLocationException ex) {
-            
-        } catch (IOException ex) {
-            System.out.println("Exception");
-        }
+        JournalFrame.getInstance().logWork(level, message);
     }
     
     @Override
@@ -898,7 +608,7 @@ private void indexButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                logWork(level, message);
+               logWork(level, message);
             }
         });
         //System.out.println(error);
@@ -946,7 +656,7 @@ private void indexButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
 
             @Override
             public void run() {
-                logWork(LogLevel.INFO, "Total amount of work in search" + number);
+                logWork(LogLevel.INFO, "Total amount of work in search: " + number);
                 searchProgressBar.setMaximum(number);
             }
             

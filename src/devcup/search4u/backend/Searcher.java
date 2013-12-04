@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import devcup.search4u.common.LogLevel;
 
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.Document;
@@ -71,11 +72,12 @@ public class Searcher {
     
     public List<SearchResult> search(List<String> queries, boolean isWildcardSearch) throws ParseException, IOException, InvalidTokenOffsetsException
     {	  	
-        if (callback != null) callback.setTotalProgress(queries.size() + 1);
+        if (callback != null) callback.setTotalProgress(queries.size());
         int max_hits_number = 1000000;
         QueryParser qParser = new QueryParser(Version.LUCENE_36, "text", analyzer);
         qParser.setAllowLeadingWildcard(isWildcardSearch);
         qParser.setDefaultOperator(QueryParser.Operator.AND);
+        int queriesNumber = 0;
         for (String queryStr : queries) {
             String initQuery = queryStr;
             if (!isWildcardSearch) {
@@ -109,7 +111,7 @@ public class Searcher {
             	}
             	documents.put(path, hightlightText);
 	        }
-	        if (callback != null) callback.setCurrentProgress(1);
+	        if (callback != null) callback.setCurrentProgress(++queriesNumber);
         }
         
         List<SearchResult> results = getAllFragments(queries, isWildcardSearch);
@@ -164,19 +166,22 @@ public class Searcher {
 	            
 	            TokenStream tokenStream = TokenSources.getAnyTokenStream(searcher.getIndexReader(), scoreDoc.doc, "text", analyzer);
 	            TextFragment[] frag = highlighter.getBestTextFragments(tokenStream, text, false, max_hits_number);
+	            boolean wasFragment = false;
 	            for (int i = 0; i < frag.length; i++) {
 	            	int wordCount = getWordCount(result.getQuery());
 	                if ((frag[i] != null) && (frag[i].getScore() >= wordCount)) {
 	                	String fragmentText = frag[i].toString();
 	                	int offset = 0;
-	                	result.addRelevDocsPath(path);
+	                	wasFragment = true;
 	                    result.addDocumentsFragment(path, offset, fragmentText);
 	                }
+	            }
+	            if (wasFragment) {
+	                result.addRelevDocsPath(path);
 	            }
 	        }
 	        results.add(result);
         }
-        if (callback != null) callback.setCurrentProgress(1);
         return results;
     }
     
@@ -188,9 +193,9 @@ public class Searcher {
 		List<String> qStrs = new ArrayList<String>();
 		//qStrs.add("ООО \\\"Рог и копытом\\\"");
 		//qStrs.add("\"встреча директором\"~");
-		qStrs.add("Рога и копыта");
+		qStrs.add("Иванов");
 		//qStrs.add("Группа компаний ПИК"); 
-		qStrs.add("Петром Сергеевичем");
+		//qStrs.add("Петром Сергеевичем");
 		boolean isWildcardSearch = false;
 		List<SearchResult> results = docSearcher.search(qStrs, false);
 				
