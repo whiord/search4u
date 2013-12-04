@@ -31,7 +31,7 @@ public class ConvertResultsToXLS {
     private final List <SearchResult> searchResultsList;
     private final String resultXMLPath;
     
-    ConvertResultsToXLS (List <SearchResult> searchResultsList, String resultXMLPath) {
+    public ConvertResultsToXLS (List <SearchResult> searchResultsList, String resultXMLPath) {
         this.searchResultsList = searchResultsList;
         this.resultXMLPath = resultXMLPath;
     }

@@ -12,16 +12,25 @@ public class Utils {
         //System.out.println("In: " + str);
         List<String> list = new LinkedList<>();
         for (String s: str.split("\\n")){
-            
-            if (!s.trim().isEmpty()){
-                String query = "";
-                for (String word: s.split("\\s")){
-                    if (!word.trim().isEmpty()){
-                        query += word.trim() + " ";
-                    }
+
+            List<String> words = new LinkedList<>();
+
+            for (String word: s.split("\\s")){
+                if (!word.trim().isEmpty()){
+                    words.add(word.trim());
                 }
+            }
+            
+            String query = "";
+            if (words.size() != 0){
+                for (int i = 0; i < words.size() -1; i++){
+                    query += words.get(i) + " ";
+                }
+                query += words.get(words.size() - 1 );
                 list.add(query);
             }
+            
+            
         }
         System.out.println("List: " + list);
         return list;

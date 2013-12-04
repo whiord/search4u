@@ -14,6 +14,7 @@ public enum LogLevel {
     INFO, DEBUG, ERROR;
     
     public String decorateHTML(String msg){
-        return "<div class=\"" + this.toString().toLowerCase() + "\">" + this.toString().toUpperCase() + ": " + msg + "</div>";
+        String buf = msg.replaceAll("\\n", "<br>");
+        return "<div class=\"" + this.toString().toLowerCase() + "\">" + this.toString().toUpperCase() + ": " + buf + "</div>";
     }
 }

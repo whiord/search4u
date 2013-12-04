@@ -17,6 +17,8 @@ import devcup.search4u.backend.SearchCallback;
 import devcup.search4u.backend.SearchResult;
 import devcup.search4u.backend.Searcher;
 import devcup.search4u.common.LogLevel;
+import devcup.search4u.xlsview.ConvertResultsToXLS;
+import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -25,8 +27,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.SwingWorker;
 import javax.swing.event.DocumentEvent;
@@ -34,6 +40,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 
 public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, SearchCallback{
     
@@ -53,13 +60,13 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
 
         previewFrame = new javax.swing.JFrame();
         closePreviewButton = new javax.swing.JButton();
-        exportXLSXButton = new javax.swing.JButton();
+        exportXLSButton = new javax.swing.JButton();
         openDestinationButton = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         resultList = new javax.swing.JList();
         jPanel4 = new javax.swing.JPanel();
-        docPathField = new javax.swing.JTextField();
+        documentPreviewPathField = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
         previewPane = new javax.swing.JTextPane();
         journalFrame = new javax.swing.JFrame();
@@ -109,13 +116,22 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
             }
         });
 
-        exportXLSXButton.setLabel("Экспорт в XLSX");
+        exportXLSButton.setText("Экспорт в XLS");
+        exportXLSButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                exportXLSButtonMouseClicked(evt);
+            }
+        });
 
         openDestinationButton.setLabel("Открыть расположение");
+        openDestinationButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                openDestinationButtonMouseClicked(evt);
+            }
+        });
 
-        jSplitPane1.setDividerLocation(200);
+        jSplitPane1.setDividerLocation(250);
         jSplitPane1.setDividerSize(8);
-        jSplitPane1.setLastDividerLocation(200);
 
         resultList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         resultList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -127,28 +143,29 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
 
         jSplitPane1.setLeftComponent(jScrollPane2);
 
-        docPathField.setEditable(false);
+        documentPreviewPathField.setEditable(false);
 
         jScrollPane3.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane3.setToolTipText("");
         jScrollPane3.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         previewPane.setEditable(false);
+        previewPane.setContentType("text/html"); // NOI18N
         jScrollPane3.setViewportView(previewPane);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(docPathField)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
+            .addComponent(documentPreviewPathField, javax.swing.GroupLayout.DEFAULT_SIZE, 696, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(docPathField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(documentPreviewPathField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 625, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel4);
@@ -160,11 +177,11 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
             .addGroup(previewFrameLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(previewFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE)
+                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 954, Short.MAX_VALUE)
                     .addGroup(previewFrameLayout.createSequentialGroup()
                         .addComponent(closePreviewButton, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(exportXLSXButton, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(exportXLSButton, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(openDestinationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -175,7 +192,7 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
                 .addContainerGap()
                 .addGroup(previewFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(closePreviewButton)
-                    .addComponent(exportXLSXButton)
+                    .addComponent(exportXLSButton)
                     .addComponent(openDestinationButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSplitPane1)
@@ -193,24 +210,25 @@ public class Search4uGUI extends javax.swing.JFrame implements IndexCallback, Se
 
         journalPane.setContentType("text/html"); // NOI18N
         journalPane.setText("<html>\n<head>\n\n<style type=\"text/css\">\n.info{\ncolor:#0036B5;\n}\n.debug{\ncolor:#00701E;\n}\n.error{\ncolor:#AD022A;\n}\n</head>\n</style>\n<body id=\"body\"></body>\n<html>\n");
+        journalPane.setMaximumSize(new java.awt.Dimension(800, 2147483647));
         jScrollPane4.setViewportView(journalPane);
 
         javax.swing.GroupLayout journalFrameLayout = new javax.swing.GroupLayout(journalFrame.getContentPane());
         journalFrame.getContentPane().setLayout(journalFrameLayout);
         journalFrameLayout.setHorizontalGroup(
             journalFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, journalFrameLayout.createSequentialGroup()
+            .addGroup(journalFrameLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(journalFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane4)
-                    .addComponent(closeJournalButton, javax.swing.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE))
+                .addGroup(journalFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 651, Short.MAX_VALUE)
+                    .addComponent(closeJournalButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 651, Short.MAX_VALUE))
                 .addContainerGap())
         );
         journalFrameLayout.setVerticalGroup(
             journalFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, journalFrameLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(closeJournalButton)
                 .addContainerGap())
@@ -488,12 +506,10 @@ private void showResultsButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN
 
 private void previewFrameComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_previewFrameComponentHidden
     this.setEnabled(true);
-    previewFrame.setAlwaysOnTop(false);
 }//GEN-LAST:event_previewFrameComponentHidden
 
 private void previewFrameComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_previewFrameComponentShown
     this.setEnabled(false);
-    previewFrame.setAlwaysOnTop(true);
 }//GEN-LAST:event_previewFrameComponentShown
 
 private void indexButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_indexButtonMouseClicked
@@ -545,18 +561,21 @@ private void indexButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
     }//GEN-LAST:event_closeJournalButtonMouseClicked
 
     private void resultListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_resultListValueChanged
-        int sel = evt.getFirstIndex();
+        int sel = resultList.getSelectedIndex();
+        if (sel == -1){
+            return;
+        }
         ObjectPair<String, String> selectedDoc = new ObjectPair<>(searchResultList.get(sel));
         
-        docPathField.setText(selectedDoc.getFirst());
+        documentPreviewPathField.setText(selectedDoc.getFirst());
         HTMLDocument doc = (HTMLDocument) previewPane.getDocument();
         String style = "<style type=\"text/css\"> B{ background-color: #EAFF5E } </style>";
-        String html = String.format("<html> <head> %s </head> <body> %s </body> </html>", style, selectedDoc.getSecond());
-        try {
-            doc.insertString(0, html, null);
-        } catch (BadLocationException ex) {
-            logWork(LogLevel.ERROR, "Something wrong happens");
-        }
+        //HTMLEditorKit editor = new HTMLEditorKit();
+        //editor.
+        String text= selectedDoc.getSecond();
+        text = text.replaceAll("\\n", "<br>");
+        String html = String.format("<html> <head> %s </head> <body> %s </body> </html>", style, text);
+        previewPane.setText(html);
     }//GEN-LAST:event_resultListValueChanged
 
     private void searchButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchButtonMouseClicked
@@ -603,7 +622,8 @@ private void indexButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
                     } catch (InterruptedException ex) {
                         handler.writeLog(LogLevel.ERROR, "Search thread was interrupted");
                     } catch (ExecutionException ex) {
-                        handler.writeLog(LogLevel.ERROR, "Something wrong hapened in search thread");
+                        handler.writeLog(LogLevel.ERROR, "Something wrong hapened in search thread: " + ex.getCause());
+                        ex.printStackTrace();
                     }
                 }
         };
@@ -681,6 +701,43 @@ private void indexButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         logWork(LogLevel.INFO, "Queries pane cleared");
     }//GEN-LAST:event_clearQueriesButtonMouseClicked
 
+    private void exportXLSButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_exportXLSButtonMouseClicked
+        JFileChooser chooser = new JFileChooser();
+        File bufDir = new File(docDirectoryField.getText());
+        if (bufDir.exists())
+            chooser.setCurrentDirectory(bufDir.getParentFile());
+        else
+            chooser.setCurrentDirectory(null);
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("XLS files", "xls");
+        chooser.setFileFilter(filter);
+        chooser.setAcceptAllFileFilterUsed(false);
+
+        int retval = chooser.showSaveDialog(this);
+        if (retval == JFileChooser.APPROVE_OPTION){
+            File f = chooser.getSelectedFile();
+            if (!f.getAbsolutePath().endsWith(".xls")){
+                f = new File(f.getAbsolutePath() + ".xls");
+            }
+            ConvertResultsToXLS xlsConverter = new ConvertResultsToXLS(searchResultList_origin, f.getAbsolutePath());
+            try {
+                xlsConverter.createXLSTable();
+                Desktop.getDesktop().open(f);
+            } catch (IOException ex) {
+                logWork(LogLevel.ERROR, "Can't save to *.xls: " + f.getAbsolutePath());
+            }
+        }
+    }//GEN-LAST:event_exportXLSButtonMouseClicked
+
+    private void openDestinationButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_openDestinationButtonMouseClicked
+        try {
+            Desktop.getDesktop().open((new File(documentPreviewPathField.getText())).getParentFile());
+        } catch (IOException ex) {
+            logWork(LogLevel.ERROR, "Can't open directory");
+        }
+       
+    }//GEN-LAST:event_openDestinationButtonMouseClicked
+
     private void processSearchResults(List<SearchResult> res) {
         searchButton.setEnabled(true);
         
@@ -699,26 +756,29 @@ private void indexButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
                 total_fragments += l.size();
             }
         }
-        summary += String.format("Запросов: %d <br>", total_fragments);
+        
         int total_documents = 0;
         if (res.size() > 0 ){
             total_documents = res.get(0).getDocuments().size();
         }
-        summary += String.format("Документов: %d <br>", total_documents);
-                
+        summary += String.format("<html> <body> Документов: <span style=\"color:#F25607;\">%d</span> <br> Совпадений: <span style=\"color:#0A65F7;\">%d</span>  </body> </html>", total_documents, total_fragments);
+        
         searchSummaryLabel.setText(summary);
+        logWork(LogLevel.INFO, String.format("Found: %d fragments in %d documents", total_fragments, total_documents));
     }
     
     private void initPreviewFrame(List<SearchResult> res){
         if (res.size() > 0){
             showResultsButton.setEnabled(true);
             searchResultList = res.get(0).getDocuments();
-            
+            searchResultList_origin = res;
             String[] names = new String[searchResultList.size()];
             for (int i = 0; i < searchResultList.size(); i++){
-                names[i] = new File(searchResultList.get(0).getFirst()).getName();
+                names[i] = new File(searchResultList.get(i).getFirst()).getName();
             }
             resultList.setListData(names);
+            resultList.setSelectedIndex(0);
+            showResultsButtonMouseClicked(null);
         }
         else{
             showResultsButton.setEnabled(false);
@@ -779,15 +839,16 @@ private void indexButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         });
     }
     private List<ObjectPair<String, String>> searchResultList;
+    private List<SearchResult> searchResultList_origin;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JButton clearQueriesButton;
     private javax.swing.JButton closeJournalButton;
     private javax.swing.JButton closePreviewButton;
     private javax.swing.JTextField docDirectoryField;
-    private javax.swing.JTextField docPathField;
+    private javax.swing.JTextField documentPreviewPathField;
     private javax.swing.JMenuItem exitMenuItem;
-    private javax.swing.JButton exportXLSXButton;
+    private javax.swing.JButton exportXLSButton;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton indexButton;

@@ -18,11 +18,11 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jSplitPane1" pref="712" max="32767" attributes="0"/>
+                      <Component id="jSplitPane1" pref="954" max="32767" attributes="0"/>
                       <Group type="102" attributes="0">
                           <Component id="closePreviewButton" min="-2" pref="147" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="exportXLSXButton" min="-2" pref="158" max="-2" attributes="0"/>
+                          <Component id="exportXLSButton" min="-2" pref="158" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="openDestinationButton" min="-2" pref="213" max="-2" attributes="0"/>
                       </Group>
@@ -37,7 +37,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="closePreviewButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="exportXLSXButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="exportXLSButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="openDestinationButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -56,21 +56,26 @@
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="closePreviewButtonMouseClicked"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="exportXLSXButton">
+        <Component class="javax.swing.JButton" name="exportXLSButton">
           <Properties>
-            <Property name="label" type="java.lang.String" value="&#x42d;&#x43a;&#x441;&#x43f;&#x43e;&#x440;&#x442; &#x432; XLSX"/>
+            <Property name="text" type="java.lang.String" value="&#x42d;&#x43a;&#x441;&#x43f;&#x43e;&#x440;&#x442; &#x432; XLS"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="exportXLSButtonMouseClicked"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="openDestinationButton">
           <Properties>
             <Property name="label" type="java.lang.String" value="&#x41e;&#x442;&#x43a;&#x440;&#x44b;&#x442;&#x44c; &#x440;&#x430;&#x441;&#x43f;&#x43e;&#x43b;&#x43e;&#x436;&#x435;&#x43d;&#x438;&#x435;"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="openDestinationButtonMouseClicked"/>
+          </Events>
         </Component>
         <Container class="javax.swing.JSplitPane" name="jSplitPane1">
           <Properties>
-            <Property name="dividerLocation" type="int" value="200"/>
+            <Property name="dividerLocation" type="int" value="250"/>
             <Property name="dividerSize" type="int" value="8"/>
-            <Property name="lastDividerLocation" type="int" value="200"/>
           </Properties>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout"/>
@@ -110,22 +115,22 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="docPathField" max="32767" attributes="0"/>
-                      <Component id="jScrollPane3" alignment="0" pref="504" max="32767" attributes="0"/>
+                      <Component id="documentPreviewPathField" pref="696" max="32767" attributes="0"/>
+                      <Component id="jScrollPane3" alignment="1" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="docPathField" min="-2" max="-2" attributes="0"/>
+                          <Component id="documentPreviewPathField" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane3" pref="625" max="32767" attributes="0"/>
+                          <Component id="jScrollPane3" pref="572" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JTextField" name="docPathField">
+                <Component class="javax.swing.JTextField" name="documentPreviewPathField">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
                   </Properties>
@@ -142,6 +147,7 @@
                     <Component class="javax.swing.JTextPane" name="previewPane">
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
+                        <Property name="contentType" type="java.lang.String" value="text/html" noResource="true"/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -157,11 +163,11 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="jScrollPane4" max="32767" attributes="0"/>
-                      <Component id="closeJournalButton" pref="678" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jScrollPane4" alignment="1" pref="651" max="32767" attributes="0"/>
+                      <Component id="closeJournalButton" alignment="1" pref="651" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -171,7 +177,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane4" pref="408" max="32767" attributes="0"/>
+                  <Component id="jScrollPane4" pref="534" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="closeJournalButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -199,6 +205,9 @@
               <Properties>
                 <Property name="contentType" type="java.lang.String" value="text/html" noResource="true"/>
                 <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;head&gt;&#xa;&#xa;&lt;style type=&quot;text/css&quot;&gt;&#xa;.info{&#xa;color:#0036B5;&#xa;}&#xa;.debug{&#xa;color:#00701E;&#xa;}&#xa;.error{&#xa;color:#AD022A;&#xa;}&#xa;&lt;/head&gt;&#xa;&lt;/style&gt;&#xa;&lt;body id=&quot;body&quot;&gt;&lt;/body&gt;&#xa;&lt;html&gt;&#xa;"/>
+                <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[800, 2147483647]"/>
+                </Property>
               </Properties>
             </Component>
           </SubComponents>
