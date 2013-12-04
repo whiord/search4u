@@ -79,6 +79,7 @@ public class Searcher {
         qParser.setDefaultOperator(QueryParser.Operator.AND);
         int queriesNumber = 0;
         for (String queryStr : queries) {
+            if (callback != null) callback.setCurrentProgress(queriesNumber++);
             String initQuery = queryStr;
             if (!isWildcardSearch) {
                 queryStr = queryStr.replaceAll("[^a-zA-Z0-9а-яА-ЯёЁ\\s]", "");
@@ -111,9 +112,9 @@ public class Searcher {
             	}
             	documents.put(path, hightlightText);
 	        }
-	        if (callback != null) callback.setCurrentProgress(++queriesNumber);
+	        
         }
-        
+        if (callback != null) callback.setCurrentProgress(queriesNumber);
         List<SearchResult> results = getAllFragments(queries, isWildcardSearch);
         
         if (results.size() > 0) {
